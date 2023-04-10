@@ -47,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.41"
+        local FreedomSVersion = "0.42"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -101,6 +101,11 @@
         local script_store_freedom_songs = filesystem.store_dir() .. SCRIPT_NAME .. '/songs' -- Redirects to %appdata%\Stand\Lua Scripts\store\FreedomScript\songs
         if not filesystem.is_dir(script_store_freedom_songs) then
             filesystem.mkdirs(script_store_freedom_songs)
+        end
+
+        local script_store_911_songs = filesystem.store_dir() .. SCRIPT_NAME .. '/911' -- Redirects to %appdata%\Stand\Lua Scripts\store\FreedomScript\911
+        if not filesystem.is_dir(script_store_911_songs) then
+            filesystem.mkdirs(script_store_911_songs)
         end
 
         local script_resources_dir = filesystem.resources_dir() .. SCRIPT_NAME -- Redirects to %appdata%\Stand\Lua Scripts\resources\FreedomScript
@@ -1372,11 +1377,11 @@
             end)
 
             local positions = {
-                v3.new(125.72, -1146.2, 222.75),
-                v3.new(118.13, -365.5, 213.06),
-                v3.new(-126.54, -508.41, 226.35),
-                v3.new(368.63, -656.42, 199.41),
-                v3.new(486.79584, -836.7407, 201.24078)
+                {v3.new(125.72, -1146.2, 222.75), v3.new(286.49008, -1007.72217, 90.0402)}, -- North 1: 286.49008, -1007.72217, 90.0402
+                {v3.new(118.13, -365.5, 213.06), v3.new(246.32755, -285.16418, 68.83013)}, -- South East 2: 246.32755, -285.16418, 68.83013
+                {v3.new(-126.54, -508.41, 226.35), v3.new(-151.16615, -276.66415, 81.63583)}, -- East 3: -151.16615, -276.66415, 81.63583
+                {v3.new(368.63, -656.42, 199.41), v3.new(590.4069, -607.59656, 41.821896)}, -- South West 4: 590.4069, -607.59656, 41.821896
+                {v3.new(486.79584, -836.7407, 201.24078), v3.new(460.1325, -1097.1022, 43.075542)},  -- West 5: 460.1325, -1097.1022, 43.075542
             }
             
             local orientations = {
@@ -1393,8 +1398,12 @@
             FreedomWorld:action("Twin Towers Boeing", {}, "Send Boeing to Twin Towers but you have each interval which you cannot spam more plane.\n\nNostalgic 9/11 but watch this.", function()
                 if lastBoeingSent ~= 1 then
                     lastBoeingSent = 1
+                    local UserPos = positions[currentPosition][2]
+                    ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
+                    FreedomPlaySound(join_path(script_store_911_songs, "911 Event.wav"), SND_FILENAME | SND_ASYNC)
                 else
                     lastBoeingSent = 0
+                    FreedomPlaySound(join_path(script_store_freedom_stop, "stop.wav"), SND_FILENAME | SND_ASYNC)
                     return
                 end
                 
@@ -1404,13 +1413,13 @@
                     util.yield()
                 end
             
-                local pos = positions[currentPosition]
+                local pos = positions[currentPosition][1]
                 local orient = orientations[currentPosition]
             
                 local boeing = entities.create_vehicle(hash, pos, orient.z)
                 ENTITY.SET_ENTITY_INVINCIBLE(boeing, menu.get_value(FreedomToggleGod))
             
-                local speed = currentPosition == 1 and 850.0 or 500.0
+                local speed = currentPosition == 1 and 850.0 or 650.0
                 VEHICLE.SET_VEHICLE_FORWARD_SPEED(boeing, speed)
                 VEHICLE.SET_VEHICLE_MAX_SPEED(boeing, speed)
             
