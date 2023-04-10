@@ -1146,7 +1146,7 @@
                     
             FreedomSessionL:toggle_loop("Auto Kick Host Token Users", {}, "Kick automatically users while using 'Aggressive', 'Sweet Spot' or 'Handicap' features which can be nuisible and destroy and control the entire session.", function()
                 local commands = {"breakup", "kick", "confusionkick", "aids", "orgasmkick", "nonhostkick", "pickupkick"}
-                for _, pid in pairs(players.list(FreedomToggleS, FreedomToggleF, true)) do
+                for _, pid in pairs(players.list(false, FreedomToggleF, true)) do --adding false because it will affect self while using host token.
                     local SpoofToken = players.get_host_token_hex(pid)
                     local isSpoofToken
                     if string.sub(SpoofToken, 1, 4) == "FFFF" then
