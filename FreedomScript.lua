@@ -2184,14 +2184,14 @@
                     FreedomNotify("\n"..FreedomPName.." has been forced breakup.")
                 end, nil, nil, COMMANDPERM_AGGRESSIVE)
 
-                local Controller = players.is_using_controller(pid) and "Confirmed" or "Unconfirmed"
-                local ModderDetect = players.is_marked_as_modder(pid) and "Confirmed" or "Unconfirmed"
-                local GodModeDetect = players.is_godmode(pid) and "Confirmed" or "Unconfirmed"
-                local DetectVPN = players.is_using_vpn(pid) and "Confirmed" or "Unconfirmed"
-                local OffRadar = players.is_otr(pid) and "Confirmed" or "Unconfirmed"
-                local Interior = players.is_in_interior(pid) and "Interior" or "Exterior"
+                local Controller = players.is_using_controller(pid) and "Confirmed" or "Unconfirmed" wait()
+                local ModderDetect = players.is_marked_as_modder(pid) and "Confirmed" or "Unconfirmed" wait()
+                local GodModeDetect = players.is_godmode(pid) and "Confirmed" or "Unconfirmed" wait()
+                local DetectVPN = players.is_using_vpn(pid) and "Confirmed" or "Unconfirmed" wait()
+                local OffRadar = players.is_otr(pid) and "Confirmed" or "Unconfirmed" wait()
+                local Interior = players.is_in_interior(pid) and "Interior" or "Exterior" wait()
 
-                local languageList = {"English/non-recognized language", "French", "German", "Italian", "Spanish", "Portuguese/Brazilian", "Polish", "Russian", "Korean", "Chinese (Taiwan)", "Japanese", "Spanish (Mexican)", "Chinese (Mainland China)"}
+                local languageList = {"English / N/A", "French", "German", "Italian", "Spanish", "Portuguese/Brazilian", "Polish", "Russian", "Korean", "Chinese (Taiwan)", "Japanese", "Spanish (Mexican)", "Chinese (Mainland China)"}
                 local languageIndex = players.get_language(pid)
                 if languageIndex >= 0 and languageIndex <= 12 then
 
@@ -2214,7 +2214,7 @@
                 local sessionInfos = {
                     {label = "Modder", value = ModderDetect},
                     {label = "Host Token", value = spoofType},
-                    {label = "Godmode Status", value = GodModeDetect},
+                    {label = "Godmode Status", value = tostring(GodModeDetect)},
                     {label = "Off the Radar", value = OffRadar},
                     {label = "Interior Status", value = Interior},
                 }
@@ -2229,7 +2229,7 @@
                     FreedomInfoPlayers:readonly(info.label, info.value)
                 end
 
-                FreedomInfoPlayers:divider("Session")
+                FreedomInfoPlayers:divider("Last Session Infos")
                 for i, info in ipairs(sessionInfos) do
                     FreedomInfoPlayers:readonly(info.label, info.value)
                 end
