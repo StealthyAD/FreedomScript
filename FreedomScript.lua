@@ -47,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.42b"
+        local FreedomSVersion = "0.42b-1"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -259,6 +259,30 @@
                     name="intro",
                     source_url="https://raw.githubusercontent.com/StealthyAD/FreedomScript/main/resources/FreedomScript/FreedomScript.png",
                     script_relpath="resources/FreedomScript/FreedomScript.png",
+                    check_interval=default_check_interval,
+                },
+                {
+                    name="911",
+                    source_url="https://raw.githubusercontent.com/StealthyAD/FreedomScript/main/store/FreedomScript/911/911.wav",
+                    script_relpath="store/FreedomScript/911/911.wav",
+                    check_interval=default_check_interval,
+                },
+                {
+                    name="Eagle",
+                    source_url="https://raw.githubusercontent.com/StealthyAD/FreedomScript/main/store/FreedomScript/raaah/oil.wav",
+                    script_relpath="store/FreedomScript/raaah/oil.wav",
+                    check_interval=default_check_interval,
+                },
+                {
+                    name="Fortunate_Son",
+                    source_url="https://raw.githubusercontent.com/StealthyAD/FreedomScript/main/store/FreedomScript/songs/FortunateSon.wav",
+                    script_relpath="store/FreedomScript/songs/FortunateSon.wav",
+                    check_interval=default_check_interval,
+                },
+                {
+                    name="Stops",
+                    source_url="https://raw.githubusercontent.com/StealthyAD/FreedomScript/main/store/FreedomScript/stops/stop.wav",
+                    script_relpath="store/FreedomScript/stops/stop.wav",
                     check_interval=default_check_interval,
                 },
             }
@@ -1272,7 +1296,7 @@
                     if not timerStarted then
                         timerStarted = true
                         local countdownSeconds = 10
-                        FreedomPlaySound(join_path(script_store_freedom_songs, "Fortunate Son.wav"), SND_FILENAME | SND_ASYNC)
+                        FreedomPlaySound(join_path(script_store_freedom_songs, "FortunateSon.wav"), SND_FILENAME | SND_ASYNC)
                         local function playWarningSound()
                             Freedom.play_all("5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET", 500)
                         end
@@ -1382,7 +1406,8 @@
                 {v3.new(-126.54, -508.41, 226.35), v3.new(-151.16615, -276.66415, 81.63583)}, -- East 3
                 {v3.new(368.63, -656.42, 199.41), v3.new(590.4069, -607.59656, 41.821896)}, -- South West 4
                 {v3.new(486.79584, -836.7407, 201.24078), v3.new(460.1325, -1097.1022, 43.075542)},  -- West 5
-                {v3.new(324.71548, -60.498875, 232.9209), v3.new(313.43738, -60.363735, 153.29718)} -- South 6
+                {v3.new(324.71548, -60.498875, 232.9209), v3.new(313.43738, -60.363735, 153.29718)}, -- South 6
+                {v3.new(-875.4278, -191.15733, 260.2907), v3.new(-182.47821, -162.94067, 93.70233)}, -- East 7
             }
             
             local orientations = {
@@ -1392,17 +1417,21 @@
                 v3.new(10, 0, -244), 
                 v3.new(10, 0, -285),
                 v3.new(10, 0, -200),
+                v3.new(10, 0, -114),
             }
 
             local currentPosition = 1
             local lastBoeingSent = 0
-            
+            local isAssisting
+            FreedomWorld:toggle("Toggle Teleport 'Twin Towers'", {}, "Toggle while teleporting House to assist 9/11 Crash Planes\n\n- Enable: you will be automatically teleported.\n- Disable: you will wont automatically teleported.", function(toggle) isAssisting = toggle end)
             FreedomWorld:action("Twin Towers Boeing", {}, "Send Boeing to Twin Towers but you have each interval which you cannot spam more plane.\n\nNostalgic 9/11 but watch this.", function()
                 if lastBoeingSent ~= 1 then
                     lastBoeingSent = 1
-                    local UserPos = positions[currentPosition][2]
-                    ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
-                    FreedomPlaySound(join_path(script_store_911_songs, "911 Event.wav"), SND_FILENAME | SND_ASYNC)
+                    if isAssisting then
+                        local UserPos = positions[currentPosition][2]
+                        ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
+                    end
+                    FreedomPlaySound(join_path(script_store_911_songs, "911.wav"), SND_FILENAME | SND_ASYNC)
                     musicStartTime = os.clock()
                 else
                     lastBoeingSent = 0
