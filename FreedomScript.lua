@@ -1,6 +1,28 @@
 --[[
     FreedomScript Reloaded for Stand by StealthyAD.
     The All-In-One Script combines every RAAAAH NUKE
+            ___     __  ___ ______ ____   ____ ______ ___ 
+           /   |   /  |/  // ____// __ \ /  _// ____//   |
+          / /| |  / /|_/ // __/  / /_/ / / / / /    / /| |
+         / ___ | / /  / // /___ / _, _/_/ / / /___ / ___ |
+        /_/  |_|/_/  /_//_____//_/ |_|/___/ \____//_/  |_|
+                                                        
+     ________  ___  ___   ________   ___  __             ___    ___  _______    ________   ___  ___     
+    |\  _____\|\  \|\  \ |\   ____\ |\  \|\  \          |\  \  /  /||\  ___ \  |\   __  \ |\  \|\  \    
+    \ \  \__/ \ \  \\\  \\ \  \___| \ \  \/  /|_        \ \  \/  / /\ \   __/| \ \  \|\  \\ \  \\\  \   
+     \ \   __\ \ \  \\\  \\ \  \     \ \   ___  \        \ \    / /  \ \  \_|/__\ \   __  \\ \   __  \  
+      \ \  \_|  \ \  \\\  \\ \  \____ \ \  \\ \  \        \/  /  /    \ \  \_|\ \\ \  \ \  \\ \  \ \  \ 
+       \ \__\    \ \_______\\ \_______\\ \__\\ \__\     __/  / /       \ \_______\\ \__\ \__\\ \__\ \__\
+        \|__|     \|_______| \|_______| \|__| \|__|    |\___/ /         \|_______| \|__|\|__| \|__|\|__|
+                                                       \|___|/                                          
+        ______                     _                     _____              _         _   
+        |  ____|                   | |                   / ____|            (_)       | |  
+        | |__  _ __  ___   ___   __| |  ___   _ __ ___  | (___    ___  _ __  _  _ __  | |_ 
+        |  __|| '__|/ _ \ / _ \ / _` | / _ \ | '_ ` _ \  \___ \  / __|| '__|| || '_ \ | __|
+        | |   | |  |  __/|  __/| (_| || (_) || | | | | | ____) || (__ | |   | || |_) || |_ 
+        |_|   |_|   \___| \___| \__,_| \___/ |_| |_| |_||_____/  \___||_|   |_|| .__/  \__|
+                                                                                | |
+                                                                                |_|
 
     Features:
     - Compatible All Stand Versions if deprecated versions too.
@@ -25,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.4"
+        local FreedomSVersion = "0.41"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -81,7 +103,7 @@
             filesystem.mkdirs(script_store_freedom_songs)
         end
 
-        local script_resources_dir = filesystem.resources_dir() .. SCRIPT_NAME -- Redirects to %appdata%\Stand\Lua Scripts\resources\Standify
+        local script_resources_dir = filesystem.resources_dir() .. SCRIPT_NAME -- Redirects to %appdata%\Stand\Lua Scripts\resources\FreedomScript
         if not filesystem.is_dir(script_resources_dir) then
             filesystem.mkdirs(script_resources_dir)
         end
@@ -193,20 +215,20 @@
         -- Auto Updater from https://github.com/hexarobi/stand-lua-auto-updater
         local status, auto_updater = pcall(require, "auto-updater")
         if not status then
-            local auto_update_complete = nil StandifyToast("Installing auto-updater...", TOAST_ALL)
+            local auto_update_complete = nil FreedomNotify("Installing auto-updater...", TOAST_ALL)
             async_http.init("raw.githubusercontent.com", "/hexarobi/stand-lua-auto-updater/main/auto-updater.lua",
                 function(result, headers, status_code)
                     local function parse_auto_update_result(result, headers, status_code)
                         local error_prefix = "Error downloading auto-updater: "
-                        if status_code ~= 200 then StandifyToast(error_prefix..status_code, TOAST_ALL) return false end
-                        if not result or result == "" then StandifyToast(error_prefix.."Found empty file.", TOAST_ALL) return false end
+                        if status_code ~= 200 then FreedomNotify(error_prefix..status_code, TOAST_ALL) return false end
+                        if not result or result == "" then FreedomNotify(error_prefix.."Found empty file.", TOAST_ALL) return false end
                         filesystem.mkdir(filesystem.scripts_dir() .. "lib")
                         local file = io.open(filesystem.scripts_dir() .. "lib\\auto-updater.lua", "wb")
-                        if file == nil then StandifyToast(error_prefix.."Could not open file for writing.", TOAST_ALL) return false end
-                        file:write(result) file:close() StandifyToast("Successfully installed auto-updater lib", TOAST_ALL) return true
+                        if file == nil then FreedomNotify(error_prefix.."Could not open file for writing.", TOAST_ALL) return false end
+                        file:write(result) file:close() FreedomNotify("Successfully installed auto-updater lib", TOAST_ALL) return true
                     end
                     auto_update_complete = parse_auto_update_result(result, headers, status_code)
-                end, function() StandifyToast("Error downloading auto-updater lib. Update failed to download.", TOAST_ALL) end)
+                end, function() FreedomNotify("Error downloading auto-updater lib. Update failed to download.", TOAST_ALL) end)
             async_http.dispatch() local i = 1 while (auto_update_complete == nil and i < 40) do util.yield(250) i = i + 1 end
             if auto_update_complete == nil then error("Error downloading auto-updater lib. HTTP Request timeout") end
             auto_updater = require("auto-updater")
@@ -250,8 +272,14 @@
         local FreedomOnline = FreedomRoot:list("Online")
         local FreedomWorld = FreedomRoot:list("World")
         local FreedomMiscs = FreedomRoot:list("Miscs")
-        FreedomRoot:action("Disclaimer", {}, "", function()
-            FreedomNotify("Created for nerd players who want make america great again and put supremacy.\nOne last word: RAAAHHHHH")
+        FreedomRoot:action("Changelog", {}, "", function()
+        async_http.init("raw.githubusercontent.com","/StealthyAD/FreedomScript/main/Changelog",function(content)
+            if content ~= "404: Not Found" then
+                local changelog = string.gsub(content, "\n$", "")
+                    FreedomNotify("\n"..changelog)
+                end
+            end)
+            async_http.dispatch()
         end)
 
         ----========================================----
@@ -1616,7 +1644,6 @@
                                 VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
                             end
                         else
-                            local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
                             VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
                         end
                     end
@@ -1644,7 +1671,6 @@
                                 VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
                             end
                         else
-                            local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
                             VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
                         end
                     end
@@ -1803,8 +1829,6 @@
                         FreedomPassive(pid)
                     end)
 
-                    local playerKilled = 0
-
                     FreedomTrolling:action("Silent Kill", {"fsilentkill"}, "", function()
                         FreedomSilent(pid)
                     end)
@@ -1828,7 +1852,6 @@
                                         VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
                                     end
                                 else
-                                    local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
                                     VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
                                 end
                             end
@@ -1878,7 +1901,6 @@
                                         VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
                                     end
                                 else
-                                    local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
                                     VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
                                 end
                             end
@@ -1928,7 +1950,6 @@
                                         VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
                                     end
                                 else
-                                    local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
                                     VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
                                 end
                             end
