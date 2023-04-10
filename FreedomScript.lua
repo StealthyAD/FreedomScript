@@ -47,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.42b-1"
+        local FreedomSVersion = "0.42c"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -1202,7 +1202,7 @@
         ----========================================----
                     
             FreedomSessionL:toggle_loop("Auto Kick Host Token Users", {}, "Kick automatically users while using 'Aggressive', 'Sweet Spot' or 'Handicap' features which can be nuisible and destroy and control the entire session.", function()
-                local commands = {"breakup", "kick", "confusionkick", "aids", "orgasmkick", "nonhostkick", "pickupkick"}
+                local commands = {"breakup", "ban", "kick", "confusionkick", "nonhostkick", "pickupkick"}
                 for _, pid in pairs(players.list(false, FreedomToggleF, true)) do --adding false because it will affect self while using host token.
                     local SpoofToken = players.get_host_token_hex(pid)
                     local isSpoofToken
@@ -1395,11 +1395,6 @@
         ---   The part of worlds parts, useless
         ----========================================----
 
-            FreedomWorld:toggle("Toggle Blackout", {}, "Only works locally", function(toggle)
-                GRAPHICS.SET_ARTIFICIAL_LIGHTS_STATE(toggle)
-                GRAPHICS.SET_ARTIFICIAL_VEHICLE_LIGHTS_STATE(toggle)
-            end)
-
             local positions = {
                 {v3.new(125.72, -1146.2, 222.75), v3.new(286.49008, -1007.72217, 90.0402)}, -- North 1
                 {v3.new(118.13, -365.5, 213.06), v3.new(246.32755, -285.16418, 68.83013)}, -- South East 2
@@ -1423,15 +1418,20 @@
             local currentPosition = 1
             local lastBoeingSent = 0
             local isAssisting
-            FreedomWorld:toggle("Toggle Teleport 'Twin Towers'", {}, "Toggle while teleporting House to assist 9/11 Crash Planes\n\n- Enable: you will be automatically teleported.\n- Disable: you will wont automatically teleported.", function(toggle) isAssisting = toggle end)
-            FreedomWorld:action("Twin Towers Boeing", {}, "Send Boeing to Twin Towers but you have each interval which you cannot spam more plane.\n\nNostalgic 9/11 but watch this.", function()
+            local toggleSong
+            local FreeTwinTowers = FreedomWorld:list("Twin Towers")
+            FreeTwinTowers:toggle("Toggle Teleport 'Twin Towers'", {}, "Toggle while teleporting House to assist 9/11 Crash Planes\n\n- Enable: you will be automatically teleported.\n- Disable: you will wont automatically teleported.", function(toggle) isAssisting = toggle end)
+            FreeTwinTowers:toggle("Toggle Sound for 'Twin Towers'", {}, "Toggle while using song House for 9/11 Crash Planes\n\n- Enable: you will hear the sound (local).\n- Disable: you will not able to hear the sound (local).", function(toggle) toggleSong = toggle end)
+            FreeTwinTowers:action("Twin Towers Boeing", {}, "Send Boeing to Twin Towers but you have each interval which you cannot spam more plane.\n\nNostalgic 9/11 but watch this.\n'Toggle Invincible Vehicle' can may be toggle (Find on Online > Vehicle Options)", function()
                 if lastBoeingSent ~= 1 then
                     lastBoeingSent = 1
                     if isAssisting then
                         local UserPos = positions[currentPosition][2]
                         ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
                     end
-                    FreedomPlaySound(join_path(script_store_911_songs, "911.wav"), SND_FILENAME | SND_ASYNC)
+                    if toggleSong then
+                        FreedomPlaySound(join_path(script_store_911_songs, "911.wav"), SND_FILENAME | SND_ASYNC)
+                    end
                     musicStartTime = os.clock()
                 else
                     lastBoeingSent = 0
@@ -1467,6 +1467,12 @@
                     util.yield() 
                 end
                 FreedomPlaySound(join_path(script_store_freedom_stop, "stop.wav"), SND_FILENAME | SND_ASYNC)
+            end)
+
+
+            FreedomWorld:toggle("Toggle Blackout", {}, "Only works locally", function(toggle)
+                GRAPHICS.SET_ARTIFICIAL_LIGHTS_STATE(toggle)
+                GRAPHICS.SET_ARTIFICIAL_VEHICLE_LIGHTS_STATE(toggle)
             end)
 
             local posCas = {v3.new(618.32416, 43.211624, 105.66624), v3.new(1171.9432, -95.993965, 105.080505)}
