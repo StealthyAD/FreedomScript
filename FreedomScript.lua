@@ -47,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.42"
+        local FreedomSVersion = "0.42b"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -1377,11 +1377,12 @@
             end)
 
             local positions = {
-                {v3.new(125.72, -1146.2, 222.75), v3.new(286.49008, -1007.72217, 90.0402)}, -- North 1: 286.49008, -1007.72217, 90.0402
-                {v3.new(118.13, -365.5, 213.06), v3.new(246.32755, -285.16418, 68.83013)}, -- South East 2: 246.32755, -285.16418, 68.83013
-                {v3.new(-126.54, -508.41, 226.35), v3.new(-151.16615, -276.66415, 81.63583)}, -- East 3: -151.16615, -276.66415, 81.63583
-                {v3.new(368.63, -656.42, 199.41), v3.new(590.4069, -607.59656, 41.821896)}, -- South West 4: 590.4069, -607.59656, 41.821896
-                {v3.new(486.79584, -836.7407, 201.24078), v3.new(460.1325, -1097.1022, 43.075542)},  -- West 5: 460.1325, -1097.1022, 43.075542
+                {v3.new(125.72, -1146.2, 222.75), v3.new(286.49008, -1007.72217, 90.0402)}, -- North 1
+                {v3.new(118.13, -365.5, 213.06), v3.new(246.32755, -285.16418, 68.83013)}, -- South East 2
+                {v3.new(-126.54, -508.41, 226.35), v3.new(-151.16615, -276.66415, 81.63583)}, -- East 3
+                {v3.new(368.63, -656.42, 199.41), v3.new(590.4069, -607.59656, 41.821896)}, -- South West 4
+                {v3.new(486.79584, -836.7407, 201.24078), v3.new(460.1325, -1097.1022, 43.075542)},  -- West 5
+                {v3.new(324.71548, -60.498875, 232.9209), v3.new(313.43738, -60.363735, 153.29718)} -- South 6
             }
             
             local orientations = {
@@ -1389,7 +1390,8 @@
                 v3.new(0, 10, -180), 
                 v3.new(10, 0, -118), 
                 v3.new(10, 0, -244), 
-                v3.new(10, 0, -285) 
+                v3.new(10, 0, -285),
+                v3.new(10, 0, -200),
             }
 
             local currentPosition = 1
@@ -1401,12 +1403,13 @@
                     local UserPos = positions[currentPosition][2]
                     ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
                     FreedomPlaySound(join_path(script_store_911_songs, "911 Event.wav"), SND_FILENAME | SND_ASYNC)
+                    musicStartTime = os.clock()
                 else
                     lastBoeingSent = 0
                     FreedomPlaySound(join_path(script_store_freedom_stop, "stop.wav"), SND_FILENAME | SND_ASYNC)
                     return
                 end
-                
+            
                 local hash = util.joaat("jet")
                 load_model(hash)
                 while not STREAMING.HAS_MODEL_LOADED(hash) do
@@ -1431,7 +1434,10 @@
                 VEHICLE.CONTROL_LANDING_GEAR(boeing, 3)
             
                 currentPosition = math.random(#positions)
-                wait()
+                while os.clock() - musicStartTime < 10.5 do
+                    util.yield() 
+                end
+                FreedomPlaySound(join_path(script_store_freedom_stop, "stop.wav"), SND_FILENAME | SND_ASYNC)
             end)
 
             local posCas = {v3.new(618.32416, 43.211624, 105.66624), v3.new(1171.9432, -95.993965, 105.080505)}
