@@ -47,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.42c"
+        local FreedomSVersion = "0.43"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -210,6 +210,11 @@
             end
 
             FreedomNotify("\n"..PName.. " could not silently killed.")
+        end
+        
+        local vehicleData = util.get_vehicles()
+        for k,v in vehicleData do
+            vehicleData[k] = v.name
         end
 
     ----=============================================----
@@ -662,6 +667,7 @@
         ----========================================----
 
             local FreedomCounters = FreedomVehicles:list("Countermeasures")
+            local FreedomSpawners = FreedomVehicles:list("Vehicle Spawning")
             local FreedomDetection = FreedomVehicles:list("Radar Detections")
             local FreedomAPS = FreedomCounters:list("Trophy ADS")
 
@@ -822,11 +828,117 @@
                 end
             end)
 
-            FreedomVehicles:action("Spawn Vehicle", {"freesp"}, "", function(text)
+            FreedomSpawners:list_action("Preset Cars", {}, "", vehicleData, function(index)
+                local hash = util.joaat(vehicleData[index])
+                local ped = PLAYER.GET_PLAYER_PED()
+                if not STREAMING.HAS_MODEL_LOADED(hash) then
+                    load_model(hash)
+                end
+                local function upgrade_vehicle(vehicle)
+                    if menu.get_value(FreedomSelfToggleUpgrade) == true then
+                        for i = 0,49 do
+                            local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
+                            VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
+                        end
+                    else
+                        VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
+                    end
+                    VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(vehicle, menu.get_value(FreedomSelfPlateIndex))
+    
+                    if menu.get_value(FreedomSelfRandomPaint) == true then
+                        local paintRand = math.random(0, 6)
+                        local colorRand = math.random(0, 159)
+                        local pearlRand = math.random(0, 159)
+                        VEHICLE.SET_VEHICLE_MOD_COLOR_1(vehicle, paintRand, colorRand, pearlRand)
+                        VEHICLE.SET_VEHICLE_MOD_COLOR_2(vehicle, paintRand, colorRand)
+                    end
+    
+                    if FreedomSelfPlateName == nil then
+                        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, FreedomPlate())
+                    else
+                        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, FreedomSelfPlateName)
+                    end
+                end
+                local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 6.5, -1.0)
+                local veh = entities.create_vehicle(hash, c, CAM.GET_FINAL_RENDERED_CAM_ROT(2).z)
+                upgrade_vehicle(veh)
+                ENTITY.SET_ENTITY_INVINCIBLE(veh, menu.get_value(FreedomSelfToggleGod))
+                VEHICLE.SET_VEHICLE_WINDOW_TINT(veh, menu.get_value(FreedomSelfWindowTint))
+                request_control_of_entity(veh)
+                local InvincibleStatus = menu.get_value(FreedomSelfToggleGod) and "Active" or "Inactive"
+                local UpgradedCar = menu.get_value(FreedomSelfToggleUpgrade) and "Active" or "Inactive"
+                if FreedomSelfPlateName == nil then
+                    FreedomNotify("\n".."You have spawned: "..vehicleData[index].. " for yourself with the parameters: \n- Plate Name: "..FreedomPlate().."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomSelfWindowTint).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                else
+                    FreedomNotify("\n".."You have spawned: "..vehicleData[index].. " for yourself with the parameters: \n- Plate Name: "..FreedomSelfPlateName.."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomSelfWindowTint).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                end
+            end)
+
+            FreedomSpawners:action("Spawn Vehicle", {"freesp"}, "", function(text)
                 menu.show_command_box_click_based(text, "freesp ")
             end, function(arg)
-                SummonCar(arg)
+                local hash = util.joaat(arg)
+                local ped = PLAYER.GET_PLAYER_PED()
+                if not STREAMING.HAS_MODEL_LOADED(hash) then
+                    load_model(hash)
+                end
+                local function upgrade_vehicle(vehicle)
+                    if menu.get_value(FreedomSelfToggleUpgrade) == true then
+                        for i = 0,49 do
+                            local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
+                            VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
+                        end
+                    else
+                        VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
+                    end
+                    VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(vehicle, menu.get_value(FreedomPlateIndex))
+
+                    if menu.get_value(FreedomSelfRandomPaint) == true then
+                        local paintRand = math.random(0, 6)
+                        local colorRand = math.random(0, 159)
+                        local pearlRand = math.random(0, 159)
+                        VEHICLE.SET_VEHICLE_MOD_COLOR_1(vehicle, paintRand, colorRand, pearlRand)
+                        VEHICLE.SET_VEHICLE_MOD_COLOR_2(vehicle, paintRand, colorRand)
+                    end
+
+                    if FreedomSelfPlateName == nil then
+                        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, FreedomPlate())
+                    else
+                        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, FreedomSelfPlateName)
+                    end
+                end
+                if STREAMING.IS_MODEL_A_VEHICLE(hash) then
+                    local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 6.5, -1.0)
+                    local veh = entities.create_vehicle(hash, c, CAM.GET_FINAL_RENDERED_CAM_ROT(2).z)
+                    upgrade_vehicle(veh)
+                    ENTITY.SET_ENTITY_INVINCIBLE(veh, menu.get_value(FreedomSelfToggleGod))
+                    VEHICLE.SET_VEHICLE_WINDOW_TINT(veh, menu.get_value(FreedomSelfWindowTint))
+                    request_control_of_entity(veh)
+                    local InvincibleStatus = menu.get_value(FreedomSelfToggleGod) and "Active" or "Inactive"
+                    local UpgradedCar = menu.get_value(FreedomSelfToggleUpgrade) and "Active" or "Inactive"
+                    if FreedomSelfPlateName == nil then
+                        FreedomNotify("\n".."You have spawned: "..arg.. " for yourself with the parameters: \n- Plate Name: "..FreedomPlate().."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomSelfWindowTint).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                    else
+                        FreedomNotify("\n".."You have spawned: "..arg.. " for yourself with the parameters: \n- Plate Name: "..FreedomSelfPlateName.."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomSelfWindowTint).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                    end
+                else
+                    FreedomNotify("The model named: "..arg.." is not recognized, please retry later.")
+                end
             end)
+
+            FreedomSpawners:text_input("Plate Name", {"freesplname"}, "Apply Plate Name when summoning vehicles.\nYou are not allowed to write more than 8 characters.", function(name)
+                if name ~= "" then
+                    FreedomSelfPlateName = name:sub(1, 8)
+                else
+                    FreedomSelfPlateName = nil
+                end                    
+            end)
+
+            FreedomSelfToggleGod = FreedomSpawners:toggle_loop("Toggle Invincible Vehicle", {}, "", function() end)
+            FreedomSelfToggleUpgrade = FreedomSpawners:toggle_loop("Toggle Upgrade Cars", {}, "", function()end)
+            FreedomSelfRandomPaint = FreedomSpawners:toggle_loop("Toggle Random Paint", {}, "", function()end)
+            FreedomSelfPlateIndex = FreedomSpawners:slider("Plate Color", {"freespc"}, "Choose Plate Color.", 0, 5, 0, 1, function()end)
+            FreedomSelfWindowTint = FreedomSpawners:slider("Window Tint", {"freeswt"}, "Choose Window tint Color.", 0, 6, 0, 1, function()end)
 
             ----========================================----
             ---              Detection Options
@@ -953,13 +1065,19 @@
             local FreedomLVehicles = FreedomOnline:list("Vehicle Options")
             local FreedomTeleports = FreedomOnline:list("Teleport Options")
 
-            FreedomExclude:toggle("Exclude Self", {"feself"}, "Exclude Self for using these features.\nIncludes: \n- Session Options \n- Vehicle Options \n- Teleport Options", function(toggle)
+            local FreedomToggleS = true
+            local FreedomToggleF = true
+            
+            local function toggleSelfCallback(toggle)
                 FreedomToggleS = not toggle
-            end)
-
-            FreedomExclude:toggle("Exclude Friends", {"fefriend"}, "Exclude Friends for using these features.\nIncludes: \n- Session Options \n- Vehicle Options \n- Teleport Options", function(toggle)
+            end
+            
+            local function toggleFriendCallback(toggle)
                 FreedomToggleF = not toggle
-            end)
+            end
+
+            FreedomExclude:toggle("Exclude Self", {"feself"}, "Exclude Self for using these features.\nIncludes: \n- Session Options \n- Vehicle Options \n- Teleport Options", toggleSelfCallback)
+            FreedomExclude:toggle("Exclude Friends", {"fefriend"}, "Exclude Friends for using these features.\nIncludes: \n- Session Options \n- Vehicle Options \n- Teleport Options", toggleFriendCallback)
 
             ----========================================----
             ---              Vehicle Options
@@ -994,21 +1112,25 @@
                         end
                     end
                     for k,v in pairs(players.list(FreedomToggleS, FreedomToggleF, true)) do
-                        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(v)
-                        local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 5.0, 0.0)
-                        local vehicle = entities.create_vehicle(hash, c, 0)
-                        ENTITY.SET_ENTITY_INVINCIBLE(vehicle, menu.get_value(FreedomToggleGod))
-                        VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, menu.get_value(FreedomTintWindow))
-                        upgrade_vehicle(vehicle)
-                        request_control_of_entity(vehicle)
-                        local InvincibleStatus = menu.get_value(FreedomToggleGod) and "Active" or "Inactive"
-                        local UpgradedCar = menu.get_value(FreedomToggleCar) and "Active" or "Inactive"
-                        
-                        if FreedomPlateName == nil then
-                            FreedomNotify("\n".."You have spawned: "..util.reverse_joaat(hash).. " for everyone with the parameters: \n- Plate Name: "..FreedomPlate().."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                        if STREAMING.IS_MODEL_A_VEHICLE(hash) then
+                            local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(v)
+                            local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 5.0, 0.0)
+                            local vehicle = entities.create_vehicle(hash, c, 0)
+                            ENTITY.SET_ENTITY_INVINCIBLE(vehicle, menu.get_value(FreedomToggleGod))
+                            VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, menu.get_value(FreedomTintWindow))
+                            upgrade_vehicle(vehicle)
+                            request_control_of_entity(vehicle)
+                            local InvincibleStatus = menu.get_value(FreedomToggleGod) and "Active" or "Inactive"
+                            local UpgradedCar = menu.get_value(FreedomToggleCar) and "Active" or "Inactive"
+                            
+                            if FreedomPlateName == nil then
+                                FreedomNotify("\n".."You have spawned: "..txt.. " for everyone with the parameters: \n- Plate Name: "..FreedomPlate().."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                            else
+                                FreedomNotify("\n".."You have spawned: "..txt.. " for everyone with the parameters: \n- Plate Name: "..FreedomPlateName.."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                            end
                         else
-                            FreedomNotify("\n".."You have spawned: "..util.reverse_joaat(hash).. " for everyone with the parameters: \n- Plate Name: "..FreedomPlateName.."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
-                        end                        
+                            FreedomNotify("The model named: "..txt.." is not recognized, please retry later.")
+                        end
                         wait()
                     end
                 end)
@@ -1677,13 +1799,17 @@
                     if not STREAMING.HAS_MODEL_LOADED(hash) then
                         load_model(hash)
                     end
-                    local vehicle = entities.create_vehicle(hash, c, 0)
-                    ENTITY.SET_ENTITY_INVINCIBLE(vehicle, menu.get_value(FreedomToggleCar))
-                    VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, menu.get_value(FreedomTintWindow))
-                    platechanger(vehicle)
-                    upgradecar(vehicle)
-                    request_control_of_entity(vehicle)
-                    FreedomNotify("\n".."You have spawned: "..util.reverse_joaat(hash).. " for " ..FreedomPName)
+                    if STREAMING.IS_MODEL_A_VEHICLE(hash) then
+                        local vehicle = entities.create_vehicle(hash, c, 0)
+                        ENTITY.SET_ENTITY_INVINCIBLE(vehicle, menu.get_value(FreedomToggleCar))
+                        VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, menu.get_value(FreedomTintWindow))
+                        platechanger(vehicle)
+                        upgradecar(vehicle)
+                        request_control_of_entity(vehicle)
+                        FreedomNotify("\n".."You have spawned: "..txt.. " for " ..FreedomPName)
+                    else
+                        FreedomNotify("The model named: "..txt.." is not recognized, please retry later.")
+                    end
                 end)
 
                 FreedomFriendly:action("Spawn Liberator", {"freelib"}, "", function ()
