@@ -47,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.43"
+        local FreedomSVersion = "0.43a"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -1084,7 +1084,44 @@
             ---   The part of online parts, vehicles
             ----========================================----
 
-                local FreedomPresetVehicles = FreedomLVehicles:list("Preset Cars")
+                FreedomLVehicles:list_action("Preset Cars", {}, "", vehicleData, function(index)
+                    local hash = util.joaat(vehicleData[index])
+                    local function upgrade_vehicle(vehicle)
+                        if menu.get_value(FreedomToggleCar) == true then
+                            for i = 0,49 do
+                                local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
+                                VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
+                            end
+                        else
+                            VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
+                        end
+                        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(vehicle, menu.get_value(FreedomPlateIndex))
+                        if FreedomPlateName == nil then
+                            VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, FreedomPlate())
+                        else
+                            VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, FreedomPlateName)
+                        end
+                    end
+                    if not STREAMING.HAS_MODEL_LOADED(hash) then
+                        load_model(hash)
+                    end
+                    for k,v in pairs(players.list(FreedomToggleS, FreedomToggleF, true)) do
+                        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(v)
+                        local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 6.5, -1.0)
+                        local veh = entities.create_vehicle(hash, c, CAM.GET_FINAL_RENDERED_CAM_ROT(2).z)
+                        upgrade_vehicle(veh)
+                        ENTITY.SET_ENTITY_INVINCIBLE(veh, menu.get_value(FreedomToggleGod))
+                        VEHICLE.SET_VEHICLE_WINDOW_TINT(veh, menu.get_value(FreedomTintWindow))
+                        request_control_of_entity(veh)
+                        local InvincibleStatus = menu.get_value(FreedomToggleGod) and "Active" or "Inactive"
+                        local UpgradedCar = menu.get_value(FreedomToggleCar) and "Active" or "Inactive"
+                        if FreedomPlateName == nil then
+                            FreedomNotify("\n".."You have spawned: "..vehicleData[index].. " for everyone with the parameters: \n- Plate Name: "..FreedomPlate().."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                        else
+                            FreedomNotify("\n".."You have spawned: "..vehicleData[index].. " for everyone with the parameters: \n- Plate Name: "..FreedomPlateName.."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                        end
+                    end
+                end)
 
                 FreedomLVehicles:action("Spawn Vehicle", {"freedomspawn"}, "Spawn everyone a vehicle.\nNOTE: It will applied also some modification like Plate License (name/color)", function (click_type)
                     menu.show_command_box_click_based(click_type, "freedomspawn ")
@@ -1122,7 +1159,6 @@
                             request_control_of_entity(vehicle)
                             local InvincibleStatus = menu.get_value(FreedomToggleGod) and "Active" or "Inactive"
                             local UpgradedCar = menu.get_value(FreedomToggleCar) and "Active" or "Inactive"
-                            
                             if FreedomPlateName == nil then
                                 FreedomNotify("\n".."You have spawned: "..txt.. " for everyone with the parameters: \n- Plate Name: "..FreedomPlate().."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
                             else
@@ -1135,7 +1171,7 @@
                     end
                 end)
 
-                FreedomLVehicles:text_input("Plate Name", {"fplatename"}, "Apply Plate Name when summoning vehicles.\nNOTE: It will also too apply to 'Friendly' spawning vehicles.\nYou are not allowed to write more than 8 characters.\nNOTE: It will applicable for 'Friendly Features'.", function(name)
+                FreedomLVehicles:text_input("Plate Name", {"fplatename"}, "Apply Plate Name when summoning vehicles.\nNOTE: It will also too apply to 'Friendly' spawning vehicles.\nYou are not allowed to write more than 8 characters.\nNOTE: It will applicable for 'Friendly'.", function(name)
                     if name ~= "" then
                         FreedomPlateName = name:sub(1, 8)
                     else
@@ -1148,95 +1184,6 @@
                 FreedomToggleGod = FreedomLVehicles:toggle_loop("Toggle Invincible Vehicle", {}, "", function() end)
                 FreedomToggleCar = FreedomLVehicles:toggle_loop("Toggle Upgrade Cars", {}, "", function()end)
                 FreedomTintWindow = FreedomLVehicles:slider("Window Tint", {""}, "Choose Window tint Color.\nNOTE: It will applicable for 'Friendly'.", 0, 6, 0, 1, function()end)
-
-                FreedomPresetVehicles:action("Summon Leopard 2", {"freeleopard"}, "Spawn everyone Tank", function ()
-                    local function upgrade_vehicle(vehicle)
-                        if menu.get_value(FreedomToggleCar) == true then
-                            for i = 0,49 do
-                                local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
-                                VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
-                            end
-                        else
-                            VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
-                        end
-                    end
-                    local function give_tank(pid)
-                        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-                        local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 10.0, 0.0)
-                    
-                        local hash = util.joaat("rhino")
-                    
-                        if not STREAMING.HAS_MODEL_LOADED(hash) then
-                            load_model(hash)
-                        end
-                    
-                        local tank = entities.create_vehicle(hash, c, ENTITY.GET_ENTITY_HEADING(ped))
-                        ENTITY.SET_ENTITY_INVINCIBLE(tank, menu.get_value(FreedomToggleGod))
-                        upgrade_vehicle(tank)
-                    end
-                    for k,v in pairs(players.list(FreedomToggleS, FreedomToggleF, true)) do
-                        give_tank(v)
-                        util.yield()
-                    end
-                end)
-
-                FreedomPresetVehicles:action("Spawn A-10 Warthog", {"freewarthog"}, "Spawn everyone A-10 Warthog", function ()
-                    local function upgrade_vehicle(vehicle)
-                        if menu.get_value(FreedomToggleCar) == true then
-                            for i = 0,49 do
-                                local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
-                                VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
-                            end
-                        else
-                            VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
-                        end
-                    end
-                    local function give_strikeforce(pid)
-                        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-                        local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 12.5, 0.0)
-                        local hash = util.joaat("strikeforce")
-                        if not STREAMING.HAS_MODEL_LOADED(hash) then
-                            load_model(hash)
-                        end
-                        local strikeforce = entities.create_vehicle(hash, c, ENTITY.GET_ENTITY_HEADING(ped))
-                        ENTITY.SET_ENTITY_INVINCIBLE(strikeforce, menu.get_value(FreedomToggleGod))
-                        VEHICLE.SET_VEHICLE_WINDOW_TINT(strikeforce, menu.get_value(FreedomTintWindow))
-                        upgrade_vehicle(strikeforce)
-                    end
-                    for k,v in pairs(players.list(FreedomToggleS, FreedomToggleF, true)) do
-                        give_strikeforce(v)
-                        util.yield()
-                    end
-                end)
-
-                FreedomPresetVehicles:action("Spawn Liberator", {"freeliberator"}, "Spawn everyone Liberator", function ()
-                    local function upgrade_vehicle(vehicle)
-                        if menu.get_value(FreedomToggleCar) == true then
-                            for i = 0,49 do
-                                local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
-                                VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
-                            end
-                        else
-                            VEHICLE.SET_VEHICLE_MOD(vehicle, 0, 0 - 1, true)
-                        end
-                    end
-                    local function give_liberator(pid)
-                        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-                        local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 6.5, 0.0)
-                        local hash = util.joaat("monster")
-                        if not STREAMING.HAS_MODEL_LOADED(hash) then
-                            load_model(hash)
-                        end
-                        local liberator = entities.create_vehicle(hash, c, ENTITY.GET_ENTITY_HEADING(ped))
-                        ENTITY.SET_ENTITY_INVINCIBLE(liberator, menu.get_value(FreedomToggleGod))
-                        VEHICLE.SET_VEHICLE_WINDOW_TINT(liberator, menu.get_value(FreedomTintWindow))
-                        upgrade_vehicle(liberator)
-                    end
-                    for k,v in pairs(players.list(FreedomToggleS, FreedomToggleF, true)) do
-                        give_liberator(v)
-                        util.yield()
-                    end
-                end)
 
             ---------------------------------------------------------------------------------------------------------------------
 
