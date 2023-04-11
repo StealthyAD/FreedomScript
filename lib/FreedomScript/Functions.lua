@@ -171,19 +171,6 @@
             return pos1:distance(pos2)
         end
 
-        function SummonCar(model_name)
-            local hash = util.joaat(model_name)
-            local ped = PLAYER.GET_PLAYER_PED()
-            if STREAMING.IS_MODEL_A_VEHICLE(hash) then
-                util.request_model(hash)
-                local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 7.5, 0.0)
-                local veh = entities.create_vehicle(hash, c, CAM.GET_FINAL_RENDERED_CAM_ROT(2).z)
-                STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hash)
-            else
-                FreedomNotify("The model is not recognize, please retry later.")
-            end
-        end
-
         function get_offset_from_gameplay_camera(distance)
             local cam_rot = CAM.GET_GAMEPLAY_CAM_ROT(0)
             local cam_pos = CAM.GET_GAMEPLAY_CAM_COORD()
