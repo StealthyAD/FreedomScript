@@ -1113,13 +1113,13 @@
                         ENTITY.SET_ENTITY_INVINCIBLE(veh, menu.get_value(FreedomToggleGod))
                         VEHICLE.SET_VEHICLE_WINDOW_TINT(veh, menu.get_value(FreedomTintWindow))
                         request_control_of_entity(veh)
-                        local InvincibleStatus = menu.get_value(FreedomToggleGod) and "Active" or "Inactive"
-                        local UpgradedCar = menu.get_value(FreedomToggleCar) and "Active" or "Inactive"
-                        if FreedomPlateName == nil then
-                            FreedomNotify("\n".."You have spawned: "..vehicleData[index].. " for everyone with the parameters: \n- Plate Name: "..FreedomPlate().."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
-                        else
-                            FreedomNotify("\n".."You have spawned: "..vehicleData[index].. " for everyone with the parameters: \n- Plate Name: "..FreedomPlateName.."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
-                        end
+                    end
+                    local InvincibleStatus = menu.get_value(FreedomToggleGod) and "Active" or "Inactive"
+                    local UpgradedCar = menu.get_value(FreedomToggleCar) and "Active" or "Inactive"
+                    if FreedomPlateName == nil then
+                        FreedomNotify("\n".."You have spawned: "..vehicleData[index].. " for everyone with the parameters: \n- Plate Name: "..FreedomPlate().." (Randomized)".."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                    else
+                        FreedomNotify("\n".."You have spawned: "..vehicleData[index].. " for everyone with the parameters: \n- Plate Name: "..FreedomPlateName.."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
                     end
                 end)
 
@@ -1157,17 +1157,17 @@
                             VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, menu.get_value(FreedomTintWindow))
                             upgrade_vehicle(vehicle)
                             request_control_of_entity(vehicle)
-                            local InvincibleStatus = menu.get_value(FreedomToggleGod) and "Active" or "Inactive"
-                            local UpgradedCar = menu.get_value(FreedomToggleCar) and "Active" or "Inactive"
-                            if FreedomPlateName == nil then
-                                FreedomNotify("\n".."You have spawned: "..txt.. " for everyone with the parameters: \n- Plate Name: "..FreedomPlate().."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
-                            else
-                                FreedomNotify("\n".."You have spawned: "..txt.. " for everyone with the parameters: \n- Plate Name: "..FreedomPlateName.."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
-                            end
                         else
                             FreedomNotify("The model named: "..txt.." is not recognized, please retry later.")
                         end
                         wait()
+                    end
+                    local InvincibleStatus = menu.get_value(FreedomToggleGod) and "Active" or "Inactive"
+                    local UpgradedCar = menu.get_value(FreedomToggleCar) and "Active" or "Inactive"
+                    if FreedomPlateName == nil then
+                        FreedomNotify("\n".."You have spawned: "..txt.. " for everyone with the parameters: \n- Plate Name: "..FreedomPlate().." (Randomized)".."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
+                    else
+                        FreedomNotify("\n".."You have spawned: "..txt.. " for everyone with the parameters: \n- Plate Name: "..FreedomPlateName.."\n- Plate Color: "..menu.get_value(FreedomPlateIndex).."\n- Window Tint: "..menu.get_value(FreedomTintWindow).."\n- Invincible Status: "..InvincibleStatus.."\n- Upgrade Status: "..UpgradedCar)
                     end
                 end)
 
