@@ -47,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.43a"
+        local FreedomSVersion = "0.44"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -1465,38 +1465,43 @@
         ----========================================----
 
             local positions = {
-                {v3.new(125.72, -1146.2, 222.75), v3.new(286.49008, -1007.72217, 90.0402)}, -- North 1
-                {v3.new(118.13, -365.5, 213.06), v3.new(246.32755, -285.16418, 68.83013)}, -- South East 2
-                {v3.new(-126.54, -508.41, 226.35), v3.new(-151.16615, -276.66415, 81.63583)}, -- East 3
-                {v3.new(368.63, -656.42, 199.41), v3.new(590.4069, -607.59656, 41.821896)}, -- South West 4
-                {v3.new(486.79584, -836.7407, 201.24078), v3.new(460.1325, -1097.1022, 43.075542)},  -- West 5
-                {v3.new(324.71548, -60.498875, 232.9209), v3.new(313.43738, -60.363735, 153.29718)}, -- South 6
-                {v3.new(-875.4278, -191.15733, 260.2907), v3.new(-182.47821, -162.94067, 93.70233)}, -- East 7
+                {v3.new(125.72, -1146.2, 222.75), v3.new(286.49008, -1007.72217, 90.0402), {"Boeing 747 appears at Pilbox Hill (North)"}}, -- North 1
+                {v3.new(118.13, -365.5, 213.06), v3.new(246.32755, -285.16418, 68.83013), {"Boeing 747 appears at Alta (South East)"}}, -- South East 2
+                {v3.new(-126.54, -508.41, 226.35), v3.new(-151.16615, -276.66415, 81.63583), {"Boeing 747 appears at Vinewood (East)"}}, -- East 3
+                {v3.new(368.63, -656.42, 199.41), v3.new(590.4069, -607.59656, 41.821896), {"Boeing 747 appears at Textile City/Strawberry Ave (South West)"}}, -- South West 4
+                {v3.new(486.79584, -836.7407, 201.24078), v3.new(460.1325, -1097.1022, 43.075542), {"Boeing 747 appears at Textile City (West)"}},  -- West 5
+                {v3.new(324.71548, -60.498875, 232.9209), v3.new(313.43738, -60.363735, 153.29718), {"Boeing 747 appears at Hawick (South)"}}, -- South 6
+                {v3.new(-875.4278, -191.15733, 260.2907), v3.new(-491.05692, -335.17578, 96.19807), {"Boeing 747 appears at Rockford Hills (East)"}}, -- East 7
+                {v3.new(578.16266, -443.25204, 205.79388), v3.new(712.1099, -243.52017, 67.47418), {"Boeing 747 appears at Alta (South West)"}}, -- South West 8
             }
             
             local orientations = {
-                v3.new(0, 0, -3),
-                v3.new(0, 10, -180), 
-                v3.new(10, 0, -118), 
-                v3.new(10, 0, -244), 
-                v3.new(10, 0, -285),
-                v3.new(10, 0, -200),
-                v3.new(10, 0, -114),
+                v3.new(0, 0, -3), -- North 1
+                v3.new(0, 10, -180), -- South East 2
+                v3.new(10, 0, -118), -- East 3
+                v3.new(10, 0, -244), -- South West 4
+                v3.new(10, 0, -285), -- West 5
+                v3.new(10, 0, -200), -- South 6
+                v3.new(10, 0, -114), -- East 7
+                v3.new(10, 0, -244), -- South West 8
             }
 
-            local currentPosition = 1
+            local currentPosition = math.random(#positions)
             local lastBoeingSent = 0
             local isAssisting
             local toggleSong
-            local FreeTwinTowers = FreedomWorld:list("Twin Towers")
+            
+            local FreeTwinTowers = FreedomWorld:list("Twin Towers", {}, "Do not laugh or you will send to the hell.\nIt's a warning, don't do that for praying for victims, don't laugh.")
             FreeTwinTowers:toggle("Toggle Teleport 'Twin Towers'", {}, "Toggle while teleporting House to assist 9/11 Crash Planes\n\n- Enable: you will be automatically teleported.\n- Disable: you will wont automatically teleported.", function(toggle) isAssisting = toggle end)
             FreeTwinTowers:toggle("Toggle Sound for 'Twin Towers'", {}, "Toggle while using song House for 9/11 Crash Planes\n\n- Enable: you will hear the sound (local).\n- Disable: you will not able to hear the sound (local).", function(toggle) toggleSong = toggle end)
-            FreeTwinTowers:action("Twin Towers Boeing", {}, "Send Boeing to Twin Towers but you have each interval which you cannot spam more plane.\n\nNostalgic 9/11 but watch this.\n'Toggle Invincible Vehicle' can may be toggle (Find on Online > Vehicle Options)", function()
+            FreeTwinTowers:action("Twin Towers Boeing", {}, "Send Boeing to Twin Towers but you have each interval which you cannot spam more plane.\n\nNostalgic 9/11 but watch this.\n'Toggle Invincible Vehicle' can may be toggle (Find on Online > Vehicle Options)\n\nBeware, some planes can cross the Twin Towers, be very careful.", function()
                 if lastBoeingSent ~= 1 then
                     lastBoeingSent = 1
                     if isAssisting then
-                        local UserPos = positions[currentPosition][2]
-                        ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
+                        local UserPos = positions[currentPosition] and positions[currentPosition][2] or nil
+                        if UserPos then
+                            ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
+                        end
                     end
                     if toggleSong then
                         FreedomPlaySound(join_path(script_store_911_songs, "911.wav"), SND_FILENAME | SND_ASYNC)
@@ -1514,39 +1519,56 @@
                     util.yield()
                 end
             
-                local pos = positions[currentPosition][1]
-                local orient = orientations[currentPosition]
-            
-                local boeing = entities.create_vehicle(hash, pos, orient.z)
-                ENTITY.SET_ENTITY_INVINCIBLE(boeing, menu.get_value(FreedomToggleGod))
-            
-                local speed = currentPosition == 1 and 850.0 or 650.0
-                VEHICLE.SET_VEHICLE_FORWARD_SPEED(boeing, speed)
-                VEHICLE.SET_VEHICLE_MAX_SPEED(boeing, speed)
-            
-                if currentPosition > 1 then
-                    ENTITY.SET_ENTITY_ROTATION(boeing, orient.x, orient.y, orient.z, 2, false)
-                    VEHICLE.SET_HELI_BLADES_SPEED(boeing, 0)
+                if positions[currentPosition] ~= nil then
+                    local pos = positions[currentPosition][1]
+                    local orient = orientations[currentPosition]
+                
+                    local boeing = entities.create_vehicle(hash, pos, orient.z)
+                    ENTITY.SET_ENTITY_INVINCIBLE(boeing, menu.get_value(FreedomToggleGod))
+                
+                    local speed = currentPosition == 1 and 850.0 or 650.0
+                    VEHICLE.SET_VEHICLE_FORWARD_SPEED(boeing, speed)
+                    VEHICLE.SET_VEHICLE_MAX_SPEED(boeing, speed)
+                
+                    if currentPosition > 0 then
+                        ENTITY.SET_ENTITY_ROTATION(boeing, orient.x, orient.y, orient.z, 2, false)
+                        VEHICLE.SET_HELI_BLADES_SPEED(boeing, 0)
+                        if positions[currentPosition][3] then
+                            local str = table.concat(positions[currentPosition][3])
+                            FreedomNotify(str)
+                        end
+                    end
+                
+                    VEHICLE.CONTROL_LANDING_GEAR(boeing, 3)
                 end
             
-                VEHICLE.CONTROL_LANDING_GEAR(boeing, 3)
-            
-                currentPosition = math.random(#positions)
-                while os.clock() - musicStartTime < 10.5 do
+                currentPosition = math.random(#positions + 1)
+                while os.clock() - musicStartTime < 11 do
                     util.yield() 
                 end
                 FreedomPlaySound(join_path(script_store_freedom_stop, "stop.wav"), SND_FILENAME | SND_ASYNC)
             end)
-
 
             FreedomWorld:toggle("Toggle Blackout", {}, "Only works locally", function(toggle)
                 GRAPHICS.SET_ARTIFICIAL_LIGHTS_STATE(toggle)
                 GRAPHICS.SET_ARTIFICIAL_VEHICLE_LIGHTS_STATE(toggle)
             end)
 
-            local posCas = {v3.new(618.32416, 43.211624, 105.66624), v3.new(1171.9432, -95.993965, 105.080505)}
-            local oriTCas = {v3.new(0, 0, -88), v3.new(0, 0, 60)}
-            local lastPosition = 0
+            local posCas = 
+            {
+                v3.new(618.32416, 43.211624, 105.66624), 
+                v3.new(1171.9432, -95.993965, 105.080505),
+                v3.new(733.55536, -308.09018, 118.84326),
+                v3.new(896.63477, 314.4733, 113.98827),
+            }
+            local oriTCas = 
+            {
+                v3.new(0, 0, -88), 
+                v3.new(0, 0, 60),
+                v3.new(0, 0, -34),
+                v3.new(0, 0, -173)
+            }
+            local lastPosition = math.random(#posCas)
             
             FreedomWorld:action("Send Boeing to Casino", {}, "Recommended for blocking roads on the casino.", function()
                 local hash = util.joaat("jet")
