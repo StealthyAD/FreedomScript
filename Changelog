@@ -1,6 +1,7 @@
-For 0.42c:
-- Re-organized 'Twin Towers' Features
-- Minor improvements for features such as 'Auto Kick Host Token Users'
+For 0.43:
+- Improvements adding Vehicle Spawning (Vehicles > Vehicles Spawning)
+- Adding error message while trying to spawn incorrect vehicle.
+- Adding Preset Cars
 
 Created for nerd players who want make america great again and put supremacy. 
 One last word: RAAAHHHHH
