@@ -47,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.44"
+        local FreedomSVersion = "0.45"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -301,6 +301,7 @@
     ----========================================----
     
         local FreedomRoot = menu.my_root()
+        FreedomRoot:divider("FreedomScript "..FreedomSVersion)
         local FreedomSelf = FreedomRoot:list("Self")
         local FreedomVehicles = FreedomRoot:list("Vehicles")
         local FreedomOnline = FreedomRoot:list("Online")
@@ -1250,19 +1251,21 @@
                     end)
                 end)
 
-                FreedomTeleports:action("Random Teleport Heterogenous", {'ftphe'}, "Teleport each player in the session to a random apartment heterogeneously?\nAlternative to Stand Features but may not karma you.\n\nToggle 'Exclude Self' to avoid using these functions.", function()
-                local assignedApartments = {}
-                    for _, pid in pairs(players.list(FreedomToggleS, FreedomToggleF, true)) do
-                        if FreedomSession() and players.get_name(pid) ~= "UndiscoveredPlayer" then
-                            local FreedomAPTRand
-                            repeat
-                                FreedomAPTRand = RandomGenerator(1, 114)
-                            until not assignedApartments[FreedomAPTRand]
-                
-                            assignedApartments[FreedomAPTRand] = true
-                            menu.trigger_commands("apt"..FreedomAPTRand..players.get_name(pid))
+                FreedomTP3Warning = FreedomTeleports:action("Random Teleport Heterogenous", {'ftphe'}, "Teleport each player in the session to a random apartment heterogeneously?\nAlternative to Stand Features but may not karma you.\n\nToggle 'Exclude Self' to avoid using these functions.", function(click)
+                    menu.show_warning(FreedomTP3Warning, click, "Do you really want teleport the entire session to the random apartment heterogeneously?\nNOTE: Teleporting all players will not really cost a fight against players.", function()
+                    local assignedApartments = {}
+                        for _, pid in pairs(players.list(FreedomToggleS, FreedomToggleF, true)) do
+                            if FreedomSession() and players.get_name(pid) ~= "UndiscoveredPlayer" then
+                                local FreedomAPTRand
+                                repeat
+                                    FreedomAPTRand = RandomGenerator(1, 114)
+                                until not assignedApartments[FreedomAPTRand]
+                    
+                                assignedApartments[FreedomAPTRand] = true
+                                menu.trigger_commands("apt"..FreedomAPTRand..players.get_name(pid))
+                            end
                         end
-                    end
+                    end)
                 end)
 
         ----========================================----
@@ -1482,76 +1485,88 @@
                 v3.new(10, 0, -244), -- South West 4
                 v3.new(10, 0, -285), -- West 5
                 v3.new(10, 0, -200), -- South 6
-                v3.new(10, 0, -114), -- East 7
+                v3.new(10, 0, -113), -- East 7
                 v3.new(10, 0, -244), -- South West 8
             }
 
             local currentPosition = math.random(#positions)
-            local lastBoeingSent = 0
-            local isAssisting
+            local isAssisting = false
             local toggleSong
+            local isCooldown = false
+            local lastTimeUsed = 0
             
             local FreeTwinTowers = FreedomWorld:list("Twin Towers", {}, "Do not laugh or you will send to the hell.\nIt's a warning, don't do that for praying for victims, don't laugh.")
-            FreeTwinTowers:toggle("Toggle Teleport 'Twin Towers'", {}, "Toggle while teleporting House to assist 9/11 Crash Planes\n\n- Enable: you will be automatically teleported.\n- Disable: you will wont automatically teleported.", function(toggle) isAssisting = toggle end)
-            FreeTwinTowers:toggle("Toggle Sound for 'Twin Towers'", {}, "Toggle while using song House for 9/11 Crash Planes\n\n- Enable: you will hear the sound (local).\n- Disable: you will not able to hear the sound (local).", function(toggle) toggleSong = toggle end)
-            FreeTwinTowers:action("Twin Towers Boeing", {}, "Send Boeing to Twin Towers but you have each interval which you cannot spam more plane.\n\nNostalgic 9/11 but watch this.\n'Toggle Invincible Vehicle' can may be toggle (Find on Online > Vehicle Options)\n\nBeware, some planes can cross the Twin Towers, be very careful.", function()
-                if lastBoeingSent ~= 1 then
-                    lastBoeingSent = 1
-                    if isAssisting then
-                        local UserPos = positions[currentPosition] and positions[currentPosition][2] or nil
-                        if UserPos then
-                            ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
-                        end
+            FreeTimerTowers = FreeTwinTowers:slider("Cooldown Duration", {"freettcoold"}, "", 60, 600, 60, 1, function()end)
+            FreeTwinTowers:toggle("Toggle Teleport 'Twin Towers'", {}, "Toggle while teleporting House to assist 9/11 Crash Planes\n\n- Enable: you will be automatically teleported.\n- Disable: you will not be automatically teleported.", function(toggle) isAssisting = toggle end)
+            FreeTwinTowers:toggle("Toggle Sound for 'Twin Towers'", {}, "Toggle while using song House for 9/11 Crash Planes\n\n- Enable: you will hear the sound (local).\n- Disable: you will not be able to hear the sound (local).", function(toggle) toggleSong = toggle end)
+            FreeTwinTowers:action("Twin Towers Boeing", {}, "Send Boeing to Twin Towers but you have each interval which you cannot spam more plane.\n\nNostalgic 9/11 but watch this.\n'Toggle Invincible Vehicle' can may be toggle (Find on Online > Vehicle Options)\n\nBeware, some planes can cross the Twin Towers, be very careful. Do not abuse the features.", function()
+                local cooldownTime = menu.get_value(FreeTimerTowers)
+                if isAssisting then
+                    local UserPos = positions[currentPosition] and positions[currentPosition][2] or nil
+                    if UserPos then
+                        ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
                     end
-                    if toggleSong then
-                        FreedomPlaySound(join_path(script_store_911_songs, "911.wav"), SND_FILENAME | SND_ASYNC)
-                    end
-                    musicStartTime = os.clock()
-                else
-                    lastBoeingSent = 0
-                    FreedomPlaySound(join_path(script_store_freedom_stop, "stop.wav"), SND_FILENAME | SND_ASYNC)
-                    return
                 end
-            
+                if toggleSong then
+                    FreedomPlaySound(join_path(script_store_911_songs, "911.wav"), SND_FILENAME | SND_ASYNC)
+                end
+                musicStartTime = os.clock()
                 local hash = util.joaat("jet")
                 load_model(hash)
                 while not STREAMING.HAS_MODEL_LOADED(hash) do
                     util.yield()
                 end
+                local currentTime = os.time()
+                local elapsedTime = currentTime - lastTimeUsed
+                if not isCooldown or elapsedTime >= cooldownTime then
+                    isCooldown = true
+                    lastTimeUsed = currentTime
+                    
+                    if positions[currentPosition] ~= nil then
+                        local pos = positions[currentPosition][1]
+                        local orient = orientations[currentPosition]
             
-                if positions[currentPosition] ~= nil then
-                    local pos = positions[currentPosition][1]
-                    local orient = orientations[currentPosition]
-                
-                    local boeing = entities.create_vehicle(hash, pos, orient.z)
-                    ENTITY.SET_ENTITY_INVINCIBLE(boeing, menu.get_value(FreedomToggleGod))
-                
-                    local speed = currentPosition == 1 and 850.0 or 650.0
-                    VEHICLE.SET_VEHICLE_FORWARD_SPEED(boeing, speed)
-                    VEHICLE.SET_VEHICLE_MAX_SPEED(boeing, speed)
-                
-                    if currentPosition > 0 then
-                        ENTITY.SET_ENTITY_ROTATION(boeing, orient.x, orient.y, orient.z, 2, false)
-                        VEHICLE.SET_HELI_BLADES_SPEED(boeing, 0)
-                        if positions[currentPosition][3] then
-                            local str = table.concat(positions[currentPosition][3])
-                            FreedomNotify(str)
+                        local boeing = entities.create_vehicle(hash, pos, orient.z)
+                        ENTITY.SET_ENTITY_INVINCIBLE(boeing, menu.get_value(FreedomToggleGod))
+            
+                        local speed = currentPosition == 1 and 850.0 or 650.0
+                        VEHICLE.SET_VEHICLE_FORWARD_SPEED(boeing, speed)
+                        VEHICLE.SET_VEHICLE_MAX_SPEED(boeing, speed)
+            
+                        if currentPosition > 0 then
+                            ENTITY.SET_ENTITY_ROTATION(boeing, orient.x, orient.y, orient.z, 2, false)
+                            VEHICLE.SET_HELI_BLADES_SPEED(boeing, 0)
+                            if positions[currentPosition][3] then
+                                local str = table.concat(positions[currentPosition][3])
+                                FreedomNotify(str)
+                            end
                         end
-                    end
-                
-                    VEHICLE.CONTROL_LANDING_GEAR(boeing, 3)
-                end
             
-                currentPosition = math.random(#positions + 1)
-                while os.clock() - musicStartTime < 11 do
-                    util.yield() 
+                        VEHICLE.CONTROL_LANDING_GEAR(boeing, 3)
+                    end
+            
+                    currentPosition = math.random(#positions + 1)
+                    while os.clock() - musicStartTime < 11 do
+                        util.yield()
+                    end
+                    FreedomPlaySound(join_path(script_store_freedom_stop, "stop.wav"), SND_FILENAME | SND_ASYNC)
+                    isCooldown = false
+                else
+                    local remainingTime = cooldownTime - elapsedTime
+                    if remainingTime >= 60 then
+                        local minutes = math.floor(remainingTime / 60)
+                        local seconds = math.floor(remainingTime % 60)
+                        local pluralMinutes = minutes > 1 and "s" or ""
+                        local pluralSeconds = seconds > 1 and "s" or ""
+                        FreedomNotify("Please wait " .. minutes .. " minute" .. pluralMinutes .. " and " .. seconds .. " second" .. pluralSeconds .. " to start again.")
+                    else
+                        local plural = remainingTime > 1 and "s" or ""
+                        local seconds = math.floor(remainingTime)
+                        FreedomNotify("Please wait " .. seconds .. " second" .. plural .. " to start again.")
+                    end
+                    FreedomPlaySound(join_path(script_store_freedom_stop, "stop.wav"), SND_FILENAME | SND_ASYNC)
+                    isAssisting = false
                 end
-                FreedomPlaySound(join_path(script_store_freedom_stop, "stop.wav"), SND_FILENAME | SND_ASYNC)
-            end)
-
-            FreedomWorld:toggle("Toggle Blackout", {}, "Only works locally", function(toggle)
-                GRAPHICS.SET_ARTIFICIAL_LIGHTS_STATE(toggle)
-                GRAPHICS.SET_ARTIFICIAL_VEHICLE_LIGHTS_STATE(toggle)
             end)
 
             local posCas = 
@@ -1687,6 +1702,24 @@
         FreedomOtherMiscs:toggle("Block Phone Calls", {""}, "Blocks incoming phones calls", function(state)
             local phone_calls = menu.ref_by_command_name("nophonespam")
             phone_calls.value = state
+        end)
+
+        FreedomOtherMiscs:toggle("Display Money", {}, "", function(toggle)
+            if toggle then
+                HUD.SET_MULTIPLAYER_WALLET_CASH()
+                HUD.SET_MULTIPLAYER_BANK_CASH()
+            else
+                HUD.REMOVE_MULTIPLAYER_WALLET_CASH()
+                HUD.REMOVE_MULTIPLAYER_BANK_CASH()
+            end
+        end)
+
+        FreedomOtherMiscs:toggle_loop("Toggle Radar/HUD", {}, "", function()
+            HUD.DISPLAY_RADAR(false)
+            HUD.DISPLAY_HUD(false)
+        end, function()
+            HUD.DISPLAY_RADAR(true)
+            HUD.DISPLAY_HUD(true)
         end)
 
         ----========================================----
