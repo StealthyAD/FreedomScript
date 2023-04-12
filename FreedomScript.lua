@@ -2424,4 +2424,3 @@
         util.on_stop(function()
             FreedomPlaySound(join_path(script_store_freedom_stop, "stop.wav"), SND_FILENAME | SND_ASYNC)
         end)
-=
