@@ -1654,7 +1654,7 @@
         end, true)
 
         FreedomMiscs:readonly("Script Version", FreedomSVersion)
-        FreedomMiscs:divider("Others")
+        FreedomMiscs:divider("Credits & Others")
         FreedomMiscs:action("StealthyAD", {}, "", function()end)
         FreedomMiscs:hyperlink("Github Page", "https://github.com/StealthyAD")
         FreedomMiscs:action("Check for Updates", {}, "The script will automatically check for updates at most daily, but you can manually check using this option anytime.", function()
