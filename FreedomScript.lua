@@ -1646,7 +1646,7 @@
                 end)
             end
 
-            local FreedomEssentials = FreedomTeleports:list("Essentials Locations", {}, "Can may cause.", function()end)  -- Interiors
+            local FreedomEssentials = FreedomTeleports:list("Essentials Locations", {}, ".", function()end)  -- Interiors
             for _, freeEssential in ipairs(freeEssentials) do
                 local UserPos = nil
                 FreedomEssentials:action(freeEssential[1], {}, "", function()
