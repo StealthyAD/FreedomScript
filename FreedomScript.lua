@@ -1467,6 +1467,215 @@
         ---   The part of worlds parts, useless
         ----========================================----
 
+            local freeGunVans = {
+                {v3.new(-30.691593170166016, 6440.61181640625, 31.46271514892578), "Gunvan 1 (Paleto Bay)"},
+                {v3.new(1708.04541015625,4818.873046875,42.020225524902344), "Gunvan 2 (Grapeseed)"},
+                {v3.new(1799.9373779296875,3901.3955078125,34.05502700805664), "Gunvan 3 (Sandy Shores)"},
+                {v3.new(1339.3294677734375,2758.759765625,51.40709686279297), "Gunvan 4 (Grand Senora Desert 'Part 1')"},
+                {v3.new(785.4343872070313,1214.0382080078125,336.1535949707031), "Gunvan 5 (Vinewood Hills)"},
+                {v3.new(-3195.79150390625,1059.0968017578125,20.859222412109375), "Gunvan 6 (Chumash)"},
+                {v3.new(-797.0811157226563,5404.021484375,34.05730438232422), "Gunvan 7 (Paleto Forest)"},
+                {v3.new(-17.769180297851563,3054.6484375,41.4296875), "Gunvan 8 (Zancudo River)"},
+                {v3.new(2667.525634765625,1469.25537109375,24.50077247619629), "Gunvan 9 (Palmer Taylor Station)"},
+                {v3.new(-1455.878662109375,2669.613525390625,17.643640518188477), "Gunvan 10 (Lago Zancudo Bridge)"},
+                {v3.new(2347.800537109375,3052.162841796875,48.184085845947266), "Gunvan 11 (Grand Senora Desert 'Part 2')"},
+                {v3.new(1513.4649658203125,-2143.073486328125,76.97412872314453), "Gunvan 12 (El Burrito Heights)"},
+                {v3.new(1156.6365966796875,-1359.7158203125,34.70103454589844), "Gunvan 13 (Murrieta Heights)"},
+                {v3.new(-58.51665115356445,-2651.006103515625,6.0007123947143555), "Gunvan 14 (Elysian Island)"},
+                {v3.new(1906.2650146484375,560.096923828125,175.74546813964844), "Gunvan 15 (Tataviam Mountains)"},
+                {v3.new(966.0137939453125,-1711.8599853515625,30.243873596191406), "Gunvan 16 (La Mesa)"},
+                {v3.new(795.4525756835938,-3271.485595703125,5.900516033172607), "Gunvan 17 (Terminal Port)"},
+                {v3.new(-582.546142578125,-1640.6015625,19.550588607788086), "Gunvan 18 (La Puerta)"},
+                {v3.new(734.7702026367188,-733.7327880859375,26.44579315185547), "Gunvan 19 (La Mesa 'Part 2')"},
+                {v3.new(-1689.081787109375,-448.0471496582031,40.953269958496094), "Gunvan 20 (Del Perro)"},
+                {v3.new(-1322.4208984375,-1164.1304931640625,4.779491901397705), "Gunvan 21 (Vespucci / Magellan Ave)"},
+                {v3.new(-501.4334716796875,50.08109664916992,56.49615478515625), "Gunvan 22 (West Vinewood)"},
+                {v3.new(273.6707763671875,72.75302124023438,99.89118194580078), "Gunvan 23 (Downtown Vinewood)"},
+                {v3.new(258.6902160644531,-753.9094848632813,34.63716125488281), "Gunvan 24 (Pillbox Hill)"},
+                {v3.new(-473.2128,-738.3798,30.56298), "Gunvan 25 (Little Seoul)"},
+                {v3.new(904.8756103515625,3607.78564453125,32.81423568725586), "Gunvan 26 (Alamo Sea)"},
+                {v3.new(-2164.646484375,4280.94091796875,48.957191467285156), "Gunvan 27 (North Chumash)"},
+                {v3.new(1464.5263671875,6554.38525390625,14.094414710998535), "Gunvan 28 (Mount Chiliad)"},
+                {v3.new(1099.485107421875,-331.3899841308594,67.20771789550781), "Gunvan 29 (Mirror Park)"},
+                {v3.new(155.89004516601563,-1649.0552978515625,29.291664123535156), "Gunvan 30 (Davis)"},
+            }
+
+            local freeLandmarks = {
+                {v3.new(-1028.3832, -2735.1409, 13.756649), "Airport Entrance"},
+                {v3.new(-1170.4204, 4926.473, 224.33012), "Altruist Camp"},
+                {v3.new(-520.25476, 4436.8955, 89.79521), "Calafia Train Bridge"},
+                {v3.new(928.1053, -2878.5774, 19.012945), "Cargo Ship"},
+                {v3.new(3411.0686, 3755.0962, 30.101265), "Humane Labs"},
+                {v3.new(-2243.81, 264.048, 174.61525), "Kortz Center"},
+                {v3.new(2121.7, 4796.3, 41.108337), "McKenzie Airfield"},
+                {v3.new(486.43237, -3339.7036, 6.0699167), "Merryweather Dock"},
+                {v3.new(464.54227, 5568.8213, 790.4641), "Mount Chiliad"},
+                {v3.new(2532.4246, -383.2167, 92.99277), "N.O.O.S.E Headquarters"},
+                {v3.new(1746.9985, 3273.6802, 41.14016), "Sandy Shores Airfield"},
+                {v3.new(760.4, -2943.2, 5.800333), "Terminal Jetsam"},
+                {v3.new(2208.6907, 5578.223, 53.736073), "Weed Farm"},
+                {v3.new(2353.8342, 1830.2937, 101.169365), "Wind Farm"}
+            }
+
+            local freeUnderwaters = {
+                {"Hatch", v3.new(4283.7285, 2963.618, -182.20798), ""},
+                {"Panzer II Tank", v3.new(4201.7407, 3644.483, -38.688774), "I love Nazis"},
+                {"Sea Monster", v3.new(-3373.7266, 504.7183, -24.418417), ""},
+                {"Sunken Cargo Ship", v3.new(3194.2065, -366.6386, -19.867027), ""},
+                {"Sunken Plane", v3.new(-943.3077, 6609.274, -20.725874), ""}
+            }
+            
+            local freeInteriors = {
+                {"Comedy Club", v3.new(379.33194, -1002.38336, -98.99994)},
+                {"Floyd's House", v3.new(-1151.8948, -1517.4011, 10.632715)},
+                {"FIB Bureau (RAID)", v3.new(149.68756, -741.0188, 254.15218)},
+                {"FIB Interior Rooftop", v3.new(121.159454, -740.33936, 258.152)},
+                {"Franklin's House (Interior)", v3.new(-2.8133092, 529.7468, 176.06947)},
+                {"Franklin's House (Room)", v3.new(2.1897643, 525.6434, 171.30257)},
+                {"IAA Office", v3.new(124.21153, -618.8245, 206.04698)},
+                {"Mineshaft", v3.new(-593.2174, 2080.1958, 131.39897)},
+                {"Michael's House", v3.new(-813.04065, 179.86508, 72.15916)},
+                {"Motel Room", v3.new(152.21722, -1001.37317, -99.00002)},
+                {"Pacific Standard Vault Room", v3.new(255.99345, 217.02151, 101.683556)},
+                {"Safe Room Space (AFK Only)", v3.new(-155.31094, -969.80676, 219.12654)},
+                {"Torture Room", v3.new(142.746, -2201.189, 4.6918745)},
+                {"Trevor's House (Sandy Shores)", v3.new(1973.6528, 3817.9497, 33.436283)},
+                {"Vanilla Unicorn Office", v3.new(97.55246, -1290.9927, 29.268766)},
+                {"Zancudo Control Tower", v3.new(-2356.094, 3248.645, 101.45063)}
+            }
+
+            local freeEssentials = {
+                {
+                    "Ammu-Nation",
+                    v3.new(14.729667, -1130.4623, 28.38218),
+                    v3.new(811.5394, -2136.2268, 29.298626),
+                    v3.new(1703.9557, 3749.8425, 34.06373),
+                    v3.new(235.26694, -42.48556, 69.696236),
+                    v3.new(844.6901, -1018.00684, 27.545353),
+                    v3.new(-325.35016, 6068.0625, 31.279776),
+                    v3.new(-664.4737, -949.35846, 21.533388),
+                    v3.new(-1325.7206, -386.22247, 36.602425),
+                    v3.new(-1110.5096, 2685.986, 18.646143),
+                    v3.new(-3159.859, 1079.9518, 20.694046),
+                    v3.new(2570.869, 310.5462, 108.461),
+                },
+                {
+                    "Arena War",
+                    v3.new(-374.40808, -1856.8129, 20.299635)
+                },
+                {
+                    "Barber Shop",
+                    v3.new(-828.62286, -188.61504, 37.62003),
+                    v3.new(129.84355, -1714.4921, 29.236816),
+                    v3.new(-1292.8214, -1117.3197, 6.628836),
+                    v3.new(1935.2532, 3717.9526, 32.385254),
+                    v3.new(1200.9613, -468.50922, 66.28133),
+                    v3.new(-30.15244, -141.15417, 57.041813),
+                    v3.new(-286.0247, 6235.8604, 31.465664),
+                },
+                {
+                    "Benny's Motor Works",
+                    v3.new(-221.68788, -1303.7201, 30.783205)
+                },
+                {
+                    "Clothing Store",
+                    v3.new(-151.23697, -305.93384, 38.308353),
+                    v3.new(413.63574, -805.7931, 29.316673),
+                    v3.new(-813.3747, -1087.347, 10.947831),
+                    v3.new(-1207.3555, -783.1656, 17.088503),
+                    v3.new(618.20264, 2739.6418, 41.92529),
+                    v3.new(129.76231, -201.78064, 54.51178),
+                    v3.new(-3165.1697, 1062.4639, 20.83883),
+                    v3.new(85.45275, -1392.5825, 29.255098),
+                    v3.new(1681.4573, 4822.2695, 42.062),
+                    v3.new(-1091.7141, 2700.7275, 19.632227),
+                    v3.new(1197.4186, 2697.1492, 37.936787),
+                    v3.new(-2.4914842, 6519.3267, 31.465714),
+                    v3.new(-719.6272, -158.39229, 37.000366),
+                    v3.new(-1459.5343, -227.91628, 49.196167),
+                },
+                {
+                    "Diamond Casino",
+                    v3.new(917.64594, 50.39213, 80.40586)
+                },
+                {
+                    "Eclipse Towers",
+                    v3.new(-793.00836, 294.89856, 85.34387)
+                },
+                {
+                    "Fort Zancudo Airbase/Airfield",
+                    v3.new(-1544.4578, 2751.5488, 17.777958),
+                },
+                {
+                    "Los Santos Customs",
+                    v3.new(-383.23624, -123.49709, 38.19501),
+                    v3.new(-1134.1277, -1988.4802, 13.183585),
+                    v3.new(708.4548, -1080.1211, 22.401926),
+                    v3.new(1174.5228, 2653.681, 38.145153),
+                },
+                {
+                    "Los Santos Car Meet",
+                    v3.new(782.53174, -1893.9546, 28.654327)
+                }
+            }
+            
+
+            local FreedomTeleports = FreedomWorld:list("Teleports")
+
+            local FreedomLandmarks = FreedomTeleports:list("Landmarks", {}, "", function()end)  -- Landmarks
+            for _, freeLandmarks in ipairs(freeLandmarks) do
+                FreedomLandmarks:action(freeLandmarks[2], {}, "", function()
+                    local UserPos = freeLandmarks[1] or nil
+                    ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
+                end)
+            end
+
+            local FreedomUnderwaters = FreedomTeleports:list("Underwaters", {}, "", function()end)  -- Underwaters
+            for _, freeUnderwaters in ipairs(freeUnderwaters) do
+                FreedomUnderwaters:action(freeUnderwaters[1], {}, freeUnderwaters[3], function()
+                    local UserPos = freeUnderwaters[2] or nil
+                    ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
+                end)
+            end
+
+            local FreedomInteriors = FreedomTeleports:list("Interiors", {}, "Can may your ped instantly die.", function()end)  -- Interiors
+            for _, freeInteriors in ipairs(freeInteriors) do
+                FreedomInteriors:action(freeInteriors[1], {}, "", function()
+                    local UserPos = freeInteriors[2] or nil
+                    ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
+                end)
+            end
+
+            local FreedomEssentials = FreedomTeleports:list("Essentials Locations", {}, "Can may cause.", function()end)  -- Interiors
+            for _, freeEssential in ipairs(freeEssentials) do
+                local UserPos = nil
+                FreedomEssentials:action(freeEssential[1], {}, "", function()
+                    if #freeEssential > 2 then
+                        local teleportIndex = math.random(#freeEssential - 2) -- Correction de la limite supérieure ici
+                        UserPos = freeEssential[teleportIndex + 2]
+                    elseif #freeEssential == 2 then
+                        UserPos = freeEssential[2]
+                    else
+                        UserPos = freeEssential[1]
+                    end
+                    ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
+                end)
+            end                
+
+            FreedomTeleports:divider("Others")
+            local FreedomGunVans = FreedomTeleports:list("Gunvan Locations", {}, "", function()end) -- Gun Van
+            for _, freeGunVans in ipairs(freeGunVans) do
+                FreedomGunVans:action(freeGunVans[2], {}, "", function()
+                    local UserPos = freeGunVans[1] or nil
+                    ENTITY.SET_ENTITY_COORDS(players.user_ped(), UserPos.x, UserPos.y, UserPos.z)
+                end)
+            end
+
+        ----========================================----
+        ---              Twin Towers Parts
+        ---   The part of worlds parts, useless
+        ----========================================----
+
             local positions = {
                 {v3.new(125.72, -1146.2, 222.75), v3.new(286.49008, -1007.72217, 90.0402), {"Boeing 747 appears at Pilbox Hill (North)"}}, -- North 1
                 {v3.new(118.13, -365.5, 213.06), v3.new(246.32755, -285.16418, 68.83013), {"Boeing 747 appears at Alta (South East)"}}, -- South East 2
@@ -1494,9 +1703,19 @@
             local toggleSong
             local isCooldown = false
             local lastTimeUsed = 0
-            
-            local FreeTwinTowers = FreedomWorld:list("Twin Towers", {}, "Do not laugh or you will send to the hell.\nIt's a warning, don't do that for praying for victims, don't laugh.")
-            FreeTimerTowers = FreeTwinTowers:slider("Cooldown Duration", {"freettcoold"}, "", 60, 600, 60, 1, function()end)
+            local warnlists = false
+            FreeTwinTowers = FreedomWorld:list("Twin Towers", {}, "", function()
+                if warnlists then
+                    warnlists = true
+                    return
+                end
+                menu.show_warning(FreeTwinTowers, CLICK_MENU, "Do not laugh or you will send to the hell.\nIt's a warning, don't do that for praying for victims, don't laugh.", function()
+                    warnlists = true
+                    menu.trigger_command(FreeTwinTowers, "")
+                end)
+            end)
+
+            FreeTimerTowers = FreeTwinTowers:slider("Cooldown Duration", {"freettcoold"}, "", 15, 600, 15, 1, function()end)
             FreeTwinTowers:toggle("Toggle Teleport 'Twin Towers'", {}, "Toggle while teleporting House to assist 9/11 Crash Planes\n\n- Enable: you will be automatically teleported.\n- Disable: you will not be automatically teleported.", function(toggle) isAssisting = toggle end)
             FreeTwinTowers:toggle("Toggle Sound for 'Twin Towers'", {}, "Toggle while using song House for 9/11 Crash Planes\n\n- Enable: you will hear the sound (local).\n- Disable: you will not be able to hear the sound (local).", function(toggle) toggleSong = toggle end)
             FreeTwinTowers:action("Twin Towers Boeing", {}, "Send Boeing to Twin Towers but you have each interval which you cannot spam more plane.\n\nNostalgic 9/11 but watch this.\n'Toggle Invincible Vehicle' can may be toggle (Find on Online > Vehicle Options)\n\nBeware, some planes can cross the Twin Towers, be very careful. Do not abuse the features.", function()
