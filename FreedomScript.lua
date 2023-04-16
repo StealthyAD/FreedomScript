@@ -47,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.46c"
+        local FreedomSVersion = "0.46d"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -2004,6 +2004,15 @@
             ---   we are ready to be friendly okay?
             ----========================================----
 
+                FreedomFriendly:toggle("Toggle Infinite Ammo", {}, "Put Infinite ammo to "..FreedomPName..", able to shoot x times without reloading.\nI'm not sure if the function works to players.\n\nNOTE: Don't use the feature if it's against players.", function(toggle)
+                    if FreedomSession() and toggle then
+                        local playerPed = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+                        WEAPON.SET_PED_INFINITE_AMMO_CLIP(playerPed, true)
+                    else
+                        WEAPON.SET_PED_INFINITE_AMMO_CLIP(playerPed, false)
+                    end
+                end)
+
                 FreedomFriendly:action("Spawn Vehicle", {"fspawn"}, "", function (click_type)
                 menu.show_command_box_click_based(click_type, "fspawn" .. FreedomPName .. " ")end,
                 function(txt)
@@ -2114,14 +2123,23 @@
                     end
                 end)
 
+                local godmodeMessageDisplayed = false
                 FreedomNeutral:action("Godmode Detection", {"fdgod"}, "", function()
                     if players.is_godmode(pid) then
                         if players.is_in_interior(pid) then
-                            FreedomNotify("\n"..FreedomPName.." is in Godmode.".."\n".."But "..FreedomPName.." is in interior.")
+                            if not godmodeMessageDisplayed then
+                                FreedomNotify("\n"..FreedomPName.." is in Godmode.".."\n".."But "..FreedomPName.." is in interior.")
+                                godmodeMessageDisplayed = true
+                            end
+                        else
+                            if not godmodeMessageDisplayed then
+                                FreedomNotify("\n"..FreedomPName.." is in Godmode.")
+                                godmodeMessageDisplayed = true
+                            end
                         end
-                        FreedomNotify("\n"..FreedomPName.." is in Godmode.")
                     else
                         FreedomNotify("\n"..FreedomPName.." is not in Godmode.")
+                        godmodeMessageDisplayed = false
                     end
                 end)
 
