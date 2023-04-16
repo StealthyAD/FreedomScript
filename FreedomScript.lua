@@ -47,7 +47,7 @@
         local SND_ASYNC<const> = 0x0001
         local SND_FILENAME<const> = 0x00020000
 
-        local FreedomSVersion = "0.46d"
+        local FreedomSVersion = "0.46e"
         local FreedomSMessage = "> FreedomScript "..FreedomSVersion
         local FreedomToast = util.toast
         local FreedomHelpMessage = "~w~Free~p~dom~r~Script ".."~s~"..FreedomSVersion
@@ -730,19 +730,6 @@
                 end
             end)
 
-            FreedomVehicles:toggle_loop("Helikopter Helikopter", {}, "Helikopter Helikopter.\nI'm not sure if DLC tanks works for us.\nRequirements: Tanks", function ()
-                local ped = PLAYER.PLAYER_PED_ID()
-                local veh = PED.GET_VEHICLE_PED_IS_IN(ped, false)
-                if PED.IS_PED_IN_ANY_VEHICLE(ped, false) then
-                    local speed = menu.get_value(FreedomForceTurret) * 0.01 
-                    turretPosition = turretPosition - speed
-                    if turretPosition < 0 then
-                        turretPosition = 360
-                    end
-                    VEHICLE.SET_VEHICLE_TANK_TURRET_POSITION(veh, turretPosition, true)
-                    util.yield(10)
-                end
-            end)
 
             FreedomKhanjali = FreedomVehicles:toggle_loop("Khanjali Rapid Fire", {}, "", function()
                 local player_veh = PED.GET_VEHICLE_PED_IS_USING(players.user_ped())
@@ -754,6 +741,24 @@
                 end
             end)
 
+            local ExplosiveHits = nil
+            FreeWeap = FreedomVehicles:toggle_loop("Explosive Weapon Planes", {}, "Explosive Ammo to destroy everything with planes.", function()
+                ExplosiveHits = menu.ref_by_path("Self>Weapons>Explosive Hits")
+                local player_veh = PED.GET_VEHICLE_PED_IS_USING(players.user_ped())
+                local ped = PLAYER.PLAYER_PED_ID()
+                if PED.IS_PED_IN_ANY_PLANE(ped) and ENTITY.GET_ENTITY_MODEL(player_veh) then
+                    menu.trigger_command(ExplosiveHits, "on")
+                else
+                    menu.trigger_command(ExplosiveHits, "off")
+                    menu.trigger_command(FreeWeap, "off")
+                    FreedomNotify("I'm sorry, you need to sit in every each plane using armored vehicle.")
+                end
+                end, function()
+                if ExplosiveHits ~= nil then
+                    menu.trigger_command(ExplosiveHits, "off")
+                end
+            end)
+            
             FreedomCounters:toggle_loop("AC-130 Flares", {""}, "Spawns Flares Behind the Vehicle. Don't spam E button or flare will not appear correctly, entites contains +30 flares.\nCompatible vehicles: Titan, Bombushka, AC-130U Spooky (GTA5Mods)\n\nNOTE: Each 10 seconds running out, it will disable preventing false fire shot flares.", function(on)
                 local specificPlanes = {"titan", "bombushka", "ac130u", "mc27us"} -- + Bonus if you want use AC-130U Spooky, required Regular to import (gta5mods)
                 -- Link: https://www.gta5-mods.com/vehicles/ac-130u-spooky-ii-gunship-add-on-working-cannons (to have ac-130u better) - Optional
