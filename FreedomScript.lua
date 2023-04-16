@@ -1304,17 +1304,28 @@
             end)
 
             FreedomSessionL:toggle_loop("No Russian in the Session", {}, "Breakup all annoying russians.\nWARNING: You might be karma if you leave the 'No Russian in the Session' option on too long.", function()
-                local commands = {"breakup", "ban"}
-                for _, pid in pairs(players.list(FreedomToggleS, FreedomToggleF, true)) do
-                    if FreedomSession() then
-                        local languageIndex = players.get_language(pid)
-                            if languageIndex == 7 then
-                            for _, command in ipairs(commands) do
-                                menu.trigger_commands(command..players.get_name(pid))
+                local commands = {"breakup", "kick"}
+                local kick_time = 0
+                for players.list(false, false, true) as pid do
+                    local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+                    util.yield(10)
+                    kick_time += 1
+                    local languageIndex = players.get_language(pid)
+                        if languageIndex == 7 then
+                            kick_time += 1
+                            util.yield(15)
+                            if kick_time >= 3 and not players.get_name(pid) ~= "UndiscoveredPlayer" then
+                                for _, command in ipairs(commands) do
+                                    menu.trigger_commands(command .. players.get_name(pid))
+                                end
+                                repeat
+                                    util.yield()
+                                until pid ~= nil
+                                kick_time = 0
                             end
                         end
                     end
-                end
+                end, function()
             end)
 
             local explosion_circle_angle = 0
@@ -1646,12 +1657,12 @@
                 end)
             end
 
-            local FreedomEssentials = FreedomTeleports:list("Essentials Locations", {}, ".", function()end)  -- Interiors
+            local FreedomEssentials = FreedomTeleports:list("Essentials Locations", {}, "", function()end)  -- Interiors
             for _, freeEssential in ipairs(freeEssentials) do
                 local UserPos = nil
                 FreedomEssentials:action(freeEssential[1], {}, "", function()
                     if #freeEssential > 2 then
-                        local teleportIndex = math.random(#freeEssential - 2) -- Correction de la limite supérieure ici
+                        local teleportIndex = math.random(#freeEssential - 2) 
                         UserPos = freeEssential[teleportIndex + 2]
                     elseif #freeEssential == 2 then
                         UserPos = freeEssential[2]
